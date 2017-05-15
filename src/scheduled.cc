@@ -59,11 +59,11 @@ extern "C" void am_computePointwise(CCTK_ARGUMENTS) {
 
         if(std:abs(u_t) > 1) {
           // mass
-          pointwise_terms_geodesic[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = ;
+          pointwise_terms_geodesic[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = dens[ijk];
           // total energy
-          pointwise_terms_geodesic[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = ;
+          pointwise_terms_geodesic[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = tau[ijk];
           // internal energy
-          pointwise_terms_geodesic[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = ;
+          pointwise_terms_geodesic[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = dens[ijk]*eps[ijk];
         }
         else {
           pointwise_terms_geodesic[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = 0;
@@ -72,9 +72,12 @@ extern "C" void am_computePointwise(CCTK_ARGUMENTS) {
         }
 
         if(std:abs(h*u_t) > 1) {
-          pointwise_terms_bernoulli[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = ;
-          pointwise_terms_bernoulli[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = ;
-          pointwise_terms_bernoulli[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = ;
+          // mass
+          pointwise_terms_bernoulli[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = dens[ijk];
+          // total energy
+          pointwise_terms_bernoulli[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = tau[ijk];
+          // internal energy
+          pointwise_terms_bernoulli[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = dens[ijk]*eps[ijk];
         }
         else {
           pointwise_terms_bernoulli[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = 0;

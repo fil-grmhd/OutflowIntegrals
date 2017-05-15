@@ -2,7 +2,7 @@
 # $Header:$
 
 implements: OutflowIntegrals
-inherits: ADMBase TmunuBase Grid HydroBase SphericalIntegrator
+inherits: ADMBase TmunuBase Grid HydroBase SphericalIntegrator THC_Core
 
 # Registers a Cactus variable to volume integral and returns registration number
 CCTK_INT FUNCTION \
