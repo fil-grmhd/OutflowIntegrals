@@ -1,0 +1,25 @@
+# Interface definition for thorn OutflowIntegrals
+# $Header:$
+
+implements: OutflowIntegrals
+inherits: ADMBase TmunuBase Grid HydroBase SphericalIntegrator
+
+# Registers a Cactus variable to volume integral and returns registration number
+CCTK_INT FUNCTION \
+    SphericalIntegrator_RegisterVolumeIntegral(CCTK_POINTER_TO_CONST IN varname, \
+                                         CCTK_POINTER_TO_CONST IN outname, \
+                                         CCTK_INT IN sn, \
+                                         CCTK_INT IN integrate_every)
+USES FUNCTION SphericalIntegrator_RegisterVolumeIntegral
+
+real volume_integrals type=SCALAR tags='checkpoint="no"'
+{
+  outint_vol_mass
+  outint_vol_energy_tot
+  outint_vol_energy_int
+} "Resulting angular momenta from volume integrals"
+
+real pointwise_terms_threshold[3] type=GF timelevels=1  tags='checkpoint="no" prolongation="none" InterpNumTimelevels=1'
+{
+  outint_terms_threshold
+} "Pointwise thresholded terms of global outflow integrals"

@@ -1,0 +1,9 @@
+Cactus Code Thorn OutflowIntegrals
+Thorn Author(s)     : Ludwig Jens Papenfort papenfort@th.physik.uni-frankfurt.de
+
+Thorn Maintainer(s) : Ludwig Jens Papenfort papenfort@th.physik.uni-frankfurt.de
+
+--------------------------------------------------------------------------
+
+Purpose of the thorn:
+Calculate a few global integrals concerning the outflow (eq. 46-48 in Fujibayashi et al. 2017).

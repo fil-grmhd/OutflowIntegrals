@@ -1,0 +1,22 @@
+# Parameter definitions for Thorn OutflowIntegrals
+# $Header$
+
+BOOLEAN verbose "Some more info" STEERABLE=always
+{
+} no
+
+BOOLEAN compute_global_quantities "Compute the global integrals?" STEERABLE=always
+{
+} yes
+
+INT integrate_every "How often should be integrated?" STEERABLE=always
+{
+  0   :: "Integrate never"
+  1:* :: "Integrate this often"
+} 0
+
+INT sphere_id "Over which sphere should be (volume) integrated?" STEERABLE=always
+{
+  -1  :: "Invalid sphere number"
+  0:* :: "SphericalIntegrator sphere id (for full volume of radius 0)"
+} -1

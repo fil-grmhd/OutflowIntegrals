@@ -1,0 +1,7 @@
+# Main make.code.defn file for thorn Outflow
+
+# Source files in this directory
+SRCS = scheduled.cc register.cc param.cc
+
+# Subdirectories containing source files
+SUBDIRS = 

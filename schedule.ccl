@@ -1,0 +1,29 @@
+# Schedule definitions for thorn OutflowIntegrals
+if(compute_global_quantities) {
+  STORAGE: volume_integrals
+  STORAGE: pointwise_terms_threshold
+}
+
+schedule outint_paramCheck at CCTK_PARAMCHECK
+{
+  lang: C
+  options: global
+} "Parameter checking"
+
+schedule outint_registerIntegrals in SphericalIntegrator_Register
+{
+  lang: C
+  options: global
+} "Register all integrals in SphericalIntegrator"
+
+
+schedule group OutflowIntegrals in SphericalIntegrator_UpdateGFs
+{
+} "OutflowIntegrals group"
+
+
+schedule outint_computePointwise in OutflowIntegrals
+{
+  lang: C
+  options: local
+} "compute point-wise quantities and threshold in local mode"
