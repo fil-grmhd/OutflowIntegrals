@@ -23,7 +23,7 @@
 #include <limits>
 
 
-extern "C" void am_computePointwise(CCTK_ARGUMENTS) {
+extern "C" void outint_computePointwise(CCTK_ARGUMENTS) {
   /*
    */
   DECLARE_CCTK_ARGUMENTS;
