@@ -15,7 +15,7 @@
 
 #include "types.hh"
 
-extern "C" void am_registerIntegrals(CCTK_ARGUMENTS) {
+extern "C" void outint_registerIntegrals(CCTK_ARGUMENTS) {
   DECLARE_CCTK_ARGUMENTS;
   DECLARE_CCTK_PARAMETERS;
 
