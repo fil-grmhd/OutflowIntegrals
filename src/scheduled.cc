@@ -58,8 +58,11 @@ extern "C" void am_computePointwise(CCTK_ARGUMENTS) {
         const CCTK_REAL h = 1.0 + eps[ijk] + press[ijk]/rho[ijk];
 
         if(std:abs(u_t) > 1) {
+          // mass
           pointwise_terms_geodesic[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = ;
+          // total energy
           pointwise_terms_geodesic[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = ;
+          // internal energy
           pointwise_terms_geodesic[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = ;
         }
         else {
