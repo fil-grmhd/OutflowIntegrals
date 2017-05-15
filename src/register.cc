@@ -19,17 +19,31 @@ extern "C" void am_registerIntegrals(CCTK_ARGUMENTS) {
   DECLARE_CCTK_ARGUMENTS;
   DECLARE_CCTK_PARAMETERS;
 
-  if(compute_global_quantities) {
-    SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_threshold[0]",
-                                               "OutflowIntegrals::outint_vol_mass",
+  if(compute_bernoulli) {
+    SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_bern[0]",
+                                               "OutflowIntegrals::bernoulli_vol_mass",
                                                sphere_id,
                                                integrate_every);
-    SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_threshold[1]",
-                                               "OutflowIntegrals::outint_vol_energy_tot",
+    SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_bern[1]",
+                                               "OutflowIntegrals::bernoulli_vol_energy_tot",
                                                sphere_id,
                                                integrate_every);
-    SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_threshold[2]",
-                                               "OutflowIntegrals::outint_vol_energy_int",
+    SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_bern[2]",
+                                               "OutflowIntegrals::bernoulli_vol_energy_int",
+                                               sphere_id,
+                                               integrate_every);
+  }
+  if(compute_geodesic) {
+    SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_geo[0]",
+                                               "OutflowIntegrals::geodesic_vol_mass",
+                                               sphere_id,
+                                               integrate_every);
+    SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_geo[1]",
+                                               "OutflowIntegrals::geodesic_vol_energy_tot",
+                                               sphere_id,
+                                               integrate_every);
+    SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_geo[2]",
+                                               "OutflowIntegrals::geodesic_vol_energy_int",
                                                sphere_id,
                                                integrate_every);
   }

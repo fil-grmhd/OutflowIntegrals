@@ -5,7 +5,11 @@ BOOLEAN verbose "Some more info" STEERABLE=always
 {
 } no
 
-BOOLEAN compute_global_quantities "Compute the global integrals?" STEERABLE=always
+BOOLEAN compute_geodesic "Compute integrals with geodesic criterion?" STEERABLE=always
+{
+} yes
+
+BOOLEAN compute_bernoulli "Compute integrals with bernoulli criterion?" STEERABLE=always
 {
 } yes
 

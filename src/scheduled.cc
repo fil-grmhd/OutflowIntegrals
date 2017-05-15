@@ -29,7 +29,7 @@ extern "C" void am_computePointwise(CCTK_ARGUMENTS) {
   DECLARE_CCTK_ARGUMENTS;
   DECLARE_CCTK_PARAMETERS;
 
-  if(!compute_global_quantities)
+  if(!compute_geodesic && !compute_bernoulli)
     return;
 
   // Anything to compute this iteration?
@@ -38,20 +38,45 @@ extern "C" void am_computePointwise(CCTK_ARGUMENTS) {
       CCTK_INFO("Not integrating anything this iteration, skipping computation.");
     return;
 
+  gf_size = cctkGH->cctk_ash[0]*cctkGH->cctk_ash[1]*cctkGH->cctk_ash[2];
+  CCTK_REAL* velx = &vel[0*gf_size];
+  CCTK_REAL* vely = &vel[1*gf_size];
+  CCTK_REAL* velz = &vel[2*gf_size];
+
+
   #pragma omp parallel for schedule(static)
   for(int k = cctk_nghostzones[2]; k < cctk_lsh[2]-cctk_nghostzones[2]; ++k) {
     for(int j = cctk_nghostzones[1]; j < cctk_lsh[1]-cctk_nghostzones[1]; ++j) {
       for(int i = cctk_nghostzones[0]; i < cctk_lsh[0]-cctk_nghostzones[0]; ++i) {
         const int ijk = CCTK_GFINDEX3D(cctkGH, i, j, k);
-        if(abs(u_t)>1) {
-          outint_vol_mass[ijk] = 1;
-          outint_vol_energy_tot[ijk] = 1;
-          outint_vol_energy_int[ijk] = 1;
+
+        const CCTK_REAL v_x = gxx[ijk]*velx[ijk] + gxy[ijk]*vely[ijk] + gxz[ijk]*velz[ijk];
+        const CCTK_REAL v_y = gxy[ijk]*velx[ijk] + gyy[ijk]*vely[ijk] + gyz[ijk]*velz[ijk];
+        const CCTK_REAL v_z = gxz[ijk]*velx[ijk] + gyz[ijk]*vely[ijk] + gzz[ijk]*velz[ijk];
+
+        const CCTK_REAL u_t = w_lorentz[ijk]*(v_x*betax[ijk] + v_y*betay[ijk] + v_z*betaz[ijk] - alp[ijk]);
+        const CCTK_REAL h = 1.0 + eps[ijk] + press[ijk]/rho[ijk];
+
+        if(std:abs(u_t) > 1) {
+          pointwise_terms_geodesic[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = ;
+          pointwise_terms_geodesic[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = ;
+          pointwise_terms_geodesic[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = ;
         }
         else {
-          outint_vol_mass[ijk] = 0;
-          outint_vol_energy_tot[ijk] = 0;
-          outint_vol_energy_int[ijk] = 0;
+          pointwise_terms_geodesic[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = 0;
+          pointwise_terms_geodesic[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = 0;
+          pointwise_terms_geodesic[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = 0;
+        }
+
+        if(std:abs(h*u_t) > 1) {
+          pointwise_terms_bernoulli[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = ;
+          pointwise_terms_bernoulli[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = ;
+          pointwise_terms_bernoulli[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = ;
+        }
+        else {
+          pointwise_terms_bernoulli[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = 0;
+          pointwise_terms_bernoulli[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = 0;
+          pointwise_terms_bernoulli[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = 0;
         }
       }
     }

@@ -14,12 +14,20 @@ USES FUNCTION SphericalIntegrator_RegisterVolumeIntegral
 
 real volume_integrals type=SCALAR tags='checkpoint="no"'
 {
-  outint_vol_mass
-  outint_vol_energy_tot
-  outint_vol_energy_int
-} "Resulting angular momenta from volume integrals"
+  geodesic_vol_mass
+  geodesic_vol_energy_tot
+  geodesic_vol_energy_int
+  bernoulli_vol_mass
+  bernoulli_vol_energy_tot
+  bernoulli_vol_energy_int
+} "Outflow results from volume integrals for both thresholds"
 
-real pointwise_terms_threshold[3] type=GF timelevels=1  tags='checkpoint="no" prolongation="none" InterpNumTimelevels=1'
+real pointwise_terms_geodesic[3] type=GF timelevels=1  tags='checkpoint="no" prolongation="none" InterpNumTimelevels=1'
 {
-  outint_terms_threshold
-} "Pointwise thresholded terms of global outflow integrals"
+  outint_terms_geo
+} "Pointwise terms of global outflow integrals, geodesic criterion"
+
+real pointwise_terms_bernoulli[3] type=GF timelevels=1  tags='checkpoint="no" prolongation="none" InterpNumTimelevels=1'
+{
+  outint_terms_bern
+} "Pointwise terms of global outflow integrals, bernoulli criterion"

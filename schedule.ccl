@@ -1,7 +1,13 @@
 # Schedule definitions for thorn OutflowIntegrals
-if(compute_global_quantities) {
+if(compute_geodesic || compute_bernoulli) {
   STORAGE: volume_integrals
-  STORAGE: pointwise_terms_threshold
+}
+
+if(compute_geodesic) {
+  STORAGE: pointwise_terms_geodesic
+}
+if(compute_bernoulli) {
+  STORAGE: pointwise_terms_bernoulli
 }
 
 schedule outint_paramCheck at CCTK_PARAMCHECK
