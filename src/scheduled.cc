@@ -38,7 +38,7 @@ extern "C" void am_computePointwise(CCTK_ARGUMENTS) {
       CCTK_INFO("Not integrating anything this iteration, skipping computation.");
     return;
 
-  gf_size = cctkGH->cctk_ash[0]*cctkGH->cctk_ash[1]*cctkGH->cctk_ash[2];
+  CCTK_INT gf_size = cctkGH->cctk_ash[0]*cctkGH->cctk_ash[1]*cctkGH->cctk_ash[2];
   CCTK_REAL* velx = &vel[0*gf_size];
   CCTK_REAL* vely = &vel[1*gf_size];
   CCTK_REAL* velz = &vel[2*gf_size];
@@ -57,32 +57,32 @@ extern "C" void am_computePointwise(CCTK_ARGUMENTS) {
         const CCTK_REAL u_t = w_lorentz[ijk]*(v_x*betax[ijk] + v_y*betay[ijk] + v_z*betaz[ijk] - alp[ijk]);
         const CCTK_REAL h = 1.0 + eps[ijk] + press[ijk]/rho[ijk];
 
-        if(std:abs(u_t) > 1) {
+        if(std::abs(u_t) > 1) {
           // mass
-          pointwise_terms_geodesic[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = dens[ijk];
+          outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = dens[ijk];
           // total energy
-          pointwise_terms_geodesic[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = tau[ijk];
+          outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = tau[ijk];
           // internal energy
-          pointwise_terms_geodesic[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = dens[ijk]*eps[ijk];
+          outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = dens[ijk]*eps[ijk];
         }
         else {
-          pointwise_terms_geodesic[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = 0;
-          pointwise_terms_geodesic[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = 0;
-          pointwise_terms_geodesic[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = 0;
+          outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = 0;
+          outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = 0;
+          outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = 0;
         }
 
-        if(std:abs(h*u_t) > 1) {
+        if(std::abs(h*u_t) > 1) {
           // mass
-          pointwise_terms_bernoulli[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = dens[ijk];
+          outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = dens[ijk];
           // total energy
-          pointwise_terms_bernoulli[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = tau[ijk];
+          outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = tau[ijk];
           // internal energy
-          pointwise_terms_bernoulli[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = dens[ijk]*eps[ijk];
+          outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = dens[ijk]*eps[ijk];
         }
         else {
-          pointwise_terms_bernoulli[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = 0;
-          pointwise_terms_bernoulli[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = 0;
-          pointwise_terms_bernoulli[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = 0;
+          outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = 0;
+          outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = 0;
+          outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = 0;
         }
       }
     }
