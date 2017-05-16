@@ -33,10 +33,12 @@ extern "C" void outint_computePointwise(CCTK_ARGUMENTS) {
     return;
 
   // Anything to compute this iteration?
-  if(cctk_iteration % integrate_every == 0)
-    if(verbose)
+  if(cctk_iteration % compute_every == 0) {
+    if(verbose) {
       CCTK_INFO("Not doing anything this iteration, skipping computation.");
+    }
     return;
+  }
 
   CCTK_INT gf_size = cctkGH->cctk_ash[0]*cctkGH->cctk_ash[1]*cctkGH->cctk_ash[2];
   CCTK_REAL* velx = &vel[0*gf_size];

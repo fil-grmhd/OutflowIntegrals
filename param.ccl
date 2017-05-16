@@ -13,7 +13,7 @@ BOOLEAN compute_bernoulli "Compute integrals with bernoulli criterion?" STEERABL
 {
 } yes
 
-INT integrate_every "How often should be integrated?" STEERABLE=always
+INT compute_every "How often should be integrated?" STEERABLE=always
 {
   0   :: "Integrate never"
   1:* :: "Integrate this often"

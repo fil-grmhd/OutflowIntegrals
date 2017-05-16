@@ -23,29 +23,29 @@ extern "C" void outint_registerIntegrals(CCTK_ARGUMENTS) {
     SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_bern[0]",
                                                "OutflowIntegrals::bernoulli_vol_mass",
                                                sphere_id,
-                                               integrate_every);
+                                               compute_every);
     SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_bern[1]",
                                                "OutflowIntegrals::bernoulli_vol_energy_tot",
                                                sphere_id,
-                                               integrate_every);
+                                               compute_every);
     SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_bern[2]",
                                                "OutflowIntegrals::bernoulli_vol_energy_int",
                                                sphere_id,
-                                               integrate_every);
+                                               compute_every);
   }
   if(compute_geodesic) {
     SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_geo[0]",
                                                "OutflowIntegrals::geodesic_vol_mass",
                                                sphere_id,
-                                               integrate_every);
+                                               compute_every);
     SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_geo[1]",
                                                "OutflowIntegrals::geodesic_vol_energy_tot",
                                                sphere_id,
-                                               integrate_every);
+                                               compute_every);
     SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_geo[2]",
                                                "OutflowIntegrals::geodesic_vol_energy_int",
                                                sphere_id,
-                                               integrate_every);
+                                               compute_every);
   }
 }
 
