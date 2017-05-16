@@ -1,4 +1,4 @@
-//  Copyright (C) 2016, Ludwig Jens Papenfort <papenfort@th.physik.uni-frankfurt.de>
+#//  Copyright (C) 2016, Ludwig Jens Papenfort <papenfort@th.physik.uni-frankfurt.de>
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -33,12 +33,15 @@ extern "C" void outint_computePointwise(CCTK_ARGUMENTS) {
     return;
 
   // Anything to compute this iteration?
-  if(cctk_iteration % compute_every == 0) {
+  if(cctk_iteration % compute_every != 0) {
     if(verbose) {
-      CCTK_INFO("Not doing anything this iteration, skipping computation.");
+      CCTK_VInfo(CCTK_THORNSTRING,"Skipping computation. (it=%i)",cctk_iteration);
     }
     return;
   }
+
+  if(verbose)
+    CCTK_VInfo(CCTK_THORNSTRING,"Updating volume integral terms. (it=%i)",cctk_iteration);
 
   CCTK_INT gf_size = cctkGH->cctk_ash[0]*cctkGH->cctk_ash[1]*cctkGH->cctk_ash[2];
   CCTK_REAL* velx = &vel[0*gf_size];
@@ -47,11 +50,10 @@ extern "C" void outint_computePointwise(CCTK_ARGUMENTS) {
 
 
   #pragma omp parallel for schedule(static)
-  for(int k = cctk_nghostzones[2]; k < cctk_lsh[2]-cctk_nghostzones[2]; ++k) {
-    for(int j = cctk_nghostzones[1]; j < cctk_lsh[1]-cctk_nghostzones[1]; ++j) {
-      for(int i = cctk_nghostzones[0]; i < cctk_lsh[0]-cctk_nghostzones[0]; ++i) {
+  for(int k = 0; k < cctk_lsh[2]; ++k) {
+    for(int j = 0; j < cctk_lsh[1]; ++j) {
+      for(int i = 0; i < cctk_lsh[0]; ++i) {
         const int ijk = CCTK_GFINDEX3D(cctkGH, i, j, k);
-
         CCTK_REAL dV = std::sqrt(utils::metric::spatial_det(gxx[ijk],
                                                             gxy[ijk],
                                                             gxz[ijk],
