@@ -1,6 +1,8 @@
 # Interface definition for thorn OutflowIntegrals
 # $Header:$
 
+USES INCLUDE: utils.hh
+
 implements: OutflowIntegrals
 inherits: ADMBase TmunuBase Grid HydroBase SphericalIntegrator
 
