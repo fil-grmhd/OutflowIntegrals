@@ -29,8 +29,12 @@ extern "C" void outint_computePointwise(CCTK_ARGUMENTS) {
   DECLARE_CCTK_ARGUMENTS;
   DECLARE_CCTK_PARAMETERS;
 
-  if(!compute_geodesic && !compute_bernoulli)
+  // stop here if there's nothing to compute
+  if((!compute_geodesic && !compute_bernoulli) || compute_every == 0) {
+    if(verbose)
+      CCTK_VInfo(CCTK_THORNSTRING,"Always skipping computation.");
     return;
+  }
 
   // Anything to compute this iteration?
   if(cctk_iteration % compute_every != 0) {
@@ -41,19 +45,24 @@ extern "C" void outint_computePointwise(CCTK_ARGUMENTS) {
   }
 
   if(verbose)
-    CCTK_VInfo(CCTK_THORNSTRING,"Updating volume integral terms. (it=%i)",cctk_iteration);
+    CCTK_VInfo(CCTK_THORNSTRING,"Updating volume integral GFs... (it=%i)",cctk_iteration);
 
+  // GF size and three velocity pointers
   CCTK_INT gf_size = cctkGH->cctk_ash[0]*cctkGH->cctk_ash[1]*cctkGH->cctk_ash[2];
   CCTK_REAL* velx = &vel[0*gf_size];
   CCTK_REAL* vely = &vel[1*gf_size];
   CCTK_REAL* velz = &vel[2*gf_size];
 
 
+  // loop over local grid extend
   #pragma omp parallel for schedule(static)
   for(int k = 0; k < cctk_lsh[2]; ++k) {
     for(int j = 0; j < cctk_lsh[1]; ++j) {
       for(int i = 0; i < cctk_lsh[0]; ++i) {
+        // get compressed index
         const int ijk = CCTK_GFINDEX3D(cctkGH, i, j, k);
+
+        // compute Jacobian for non-flat volume element
         CCTK_REAL dV = std::sqrt(utils::metric::spatial_det(gxx[ijk],
                                                             gxy[ijk],
                                                             gxz[ijk],
@@ -61,17 +70,27 @@ extern "C" void outint_computePointwise(CCTK_ARGUMENTS) {
                                                             gyz[ijk],
                                                             gzz[ijk]));
 
+        // transform to covariant three velocity components
         const CCTK_REAL v_x = gxx[ijk]*velx[ijk] + gxy[ijk]*vely[ijk] + gxz[ijk]*velz[ijk];
         const CCTK_REAL v_y = gxy[ijk]*velx[ijk] + gyy[ijk]*vely[ijk] + gyz[ijk]*velz[ijk];
         const CCTK_REAL v_z = gxz[ijk]*velx[ijk] + gyz[ijk]*vely[ijk] + gzz[ijk]*velz[ijk];
 
+        // get u_t
         const CCTK_REAL u_t = w_lorentz[ijk]*(v_x*betax[ijk] + v_y*betay[ijk] + v_z*betaz[ijk] - alp[ijk]);
-        const CCTK_REAL h = 1.0 + eps[ijk] + press[ijk]/rho[ijk];
+        outint_ut[ijk] = u_t;
 
+        // get the enthalpy
+        const CCTK_REAL h = 1.0 + eps[ijk] + press[ijk]/rho[ijk];
+        outint_h[ijk] = h;
+
+        // precompute conserved density and energy
         const CCTK_REAL D = w_lorentz[ijk]*rho[ijk];
         const CCTK_REAL tau = D*h*w_lorentz[ijk] - press[ijk] - D;
 
+        // geodesic criterion
         if(std::abs(u_t) > 1) {
+          //CCTK_VInfo(CCTK_THORNSTRING,"Found unbound matter (geodesic) (it=%i,x=%e,y=%e,z=%e,u_t=%e)",cctk_iteration,x[ijk],y[ijk],z[ijk],u_t);
+
           // mass
           outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = dV*D;
           // total energy
@@ -85,7 +104,10 @@ extern "C" void outint_computePointwise(CCTK_ARGUMENTS) {
           outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = 0;
         }
 
+        // bernoulli criterion
         if(std::abs(h*u_t) > 1) {
+          //CCTK_VInfo(CCTK_THORNSTRING,"Found unbound matter (bernoulli) (it=%i,x=%e,y=%e,z=%e,h=%e,u_t=%e)",cctk_iteration,x[ijk],y[ijk],z[ijk],h,u_t);
+
           // mass
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = dV*D;
           // total energy

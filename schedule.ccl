@@ -1,6 +1,7 @@
 # Schedule definitions for thorn OutflowIntegrals
 if(compute_geodesic || compute_bernoulli) {
   STORAGE: volume_integrals
+  STORAGE: unbnd_criterions
 }
 
 if(compute_geodesic) {

@@ -4,7 +4,7 @@
 USES INCLUDE: utils.hh
 
 implements: OutflowIntegrals
-inherits: ADMBase TmunuBase Grid HydroBase SphericalIntegrator
+inherits: ADMBase Grid HydroBase SphericalIntegrator
 
 # Registers a Cactus variable to volume integral and returns registration number
 CCTK_INT FUNCTION \
@@ -14,7 +14,7 @@ CCTK_INT FUNCTION \
                                          CCTK_INT IN integrate_every)
 USES FUNCTION SphericalIntegrator_RegisterVolumeIntegral
 
-real volume_integrals type=SCALAR tags='checkpoint="no"'
+real volume_integrals[2] type=SCALAR tags='checkpoint="no"'
 {
   geodesic_vol_mass
   geodesic_vol_energy_tot
@@ -22,7 +22,7 @@ real volume_integrals type=SCALAR tags='checkpoint="no"'
   bernoulli_vol_mass
   bernoulli_vol_energy_tot
   bernoulli_vol_energy_int
-} "Outflow results from volume integrals for both thresholds"
+} "Outflow results from volume integrals for both thresholds, inner / outer sphere"
 
 real pointwise_terms_geodesic[3] type=GF timelevels=1  tags='checkpoint="no" prolongation="none" InterpNumTimelevels=1'
 {
@@ -33,3 +33,9 @@ real pointwise_terms_bernoulli[3] type=GF timelevels=1  tags='checkpoint="no" pr
 {
   outint_terms_bern
 } "Pointwise terms of global outflow integrals, bernoulli criterion"
+
+real unbnd_criterions type=GF timelevels=1  tags='checkpoint="no" prolongation="none" InterpNumTimelevels=1'
+{
+  outint_ut
+  outint_h
+}

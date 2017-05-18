@@ -19,7 +19,7 @@ INT compute_every "How often should be integrated?" STEERABLE=always
   1:* :: "Integrate this often"
 } 0
 
-INT sphere_id "Over which sphere should be (volume) integrated?" STEERABLE=always
+INT sphere_id[2] "Over which sphere should be (volume) integrated? (inner and outer sphere)" STEERABLE=always
 {
   -1  :: "Invalid sphere number"
   0:* :: "SphericalIntegrator sphere id"

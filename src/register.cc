@@ -19,32 +19,64 @@ extern "C" void outint_registerIntegrals(CCTK_ARGUMENTS) {
   DECLARE_CCTK_ARGUMENTS;
   DECLARE_CCTK_PARAMETERS;
 
+  // don't register anything, if it is never computed
+  if(compute_every == 0)
+    return;
+
   if(compute_bernoulli) {
+    // first sphere
     SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_bern[0]",
-                                               "OutflowIntegrals::bernoulli_vol_mass",
-                                               sphere_id,
+                                               "OutflowIntegrals::bernoulli_vol_mass[0]",
+                                               sphere_id[0],
                                                compute_every);
     SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_bern[1]",
-                                               "OutflowIntegrals::bernoulli_vol_energy_tot",
-                                               sphere_id,
+                                               "OutflowIntegrals::bernoulli_vol_energy_tot[0]",
+                                               sphere_id[0],
                                                compute_every);
     SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_bern[2]",
-                                               "OutflowIntegrals::bernoulli_vol_energy_int",
-                                               sphere_id,
+                                               "OutflowIntegrals::bernoulli_vol_energy_int[0]",
+                                               sphere_id[0],
+                                               compute_every);
+    // second sphere (or whole domain, defined by SphericalIntegrator params)
+    SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_bern[0]",
+                                               "OutflowIntegrals::bernoulli_vol_mass[1]",
+                                               sphere_id[1],
+                                               compute_every);
+    SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_bern[1]",
+                                               "OutflowIntegrals::bernoulli_vol_energy_tot[1]",
+                                               sphere_id[1],
+                                               compute_every);
+    SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_bern[2]",
+                                               "OutflowIntegrals::bernoulli_vol_energy_int[1]",
+                                               sphere_id[1],
                                                compute_every);
   }
   if(compute_geodesic) {
+    // first sphere
     SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_geo[0]",
-                                               "OutflowIntegrals::geodesic_vol_mass",
-                                               sphere_id,
+                                               "OutflowIntegrals::geodesic_vol_mass[0]",
+                                               sphere_id[0],
                                                compute_every);
     SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_geo[1]",
-                                               "OutflowIntegrals::geodesic_vol_energy_tot",
-                                               sphere_id,
+                                               "OutflowIntegrals::geodesic_vol_energy_tot[0]",
+                                               sphere_id[0],
                                                compute_every);
     SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_geo[2]",
-                                               "OutflowIntegrals::geodesic_vol_energy_int",
-                                               sphere_id,
+                                               "OutflowIntegrals::geodesic_vol_energy_int[0]",
+                                               sphere_id[0],
+                                               compute_every);
+    // second sphere (or whole domain, defined by SphericalIntegrator params)
+    SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_geo[0]",
+                                               "OutflowIntegrals::geodesic_vol_mass[1]",
+                                               sphere_id[1],
+                                               compute_every);
+    SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_geo[1]",
+                                               "OutflowIntegrals::geodesic_vol_energy_tot[1]",
+                                               sphere_id[1],
+                                               compute_every);
+    SphericalIntegrator_RegisterVolumeIntegral("OutflowIntegrals::outint_terms_geo[2]",
+                                               "OutflowIntegrals::geodesic_vol_energy_int[1]",
+                                               sphere_id[1],
                                                compute_every);
   }
 }

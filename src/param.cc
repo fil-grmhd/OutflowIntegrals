@@ -24,6 +24,6 @@ extern "C" void outint_paramCheck(CCTK_ARGUMENTS) {
   DECLARE_CCTK_ARGUMENTS;
   DECLARE_CCTK_PARAMETERS;
 
-  if(sphere_id < 0)
-    CCTK_VWarn(0,__LINE__,__FILE__,CCTK_THORNSTRING,"Please set sphere_id to to a valid SphericalIntegrator sphere id.");
+  if(sphere_id[0] < 0 || sphere_id[1] < 0)
+    CCTK_VWarn(0,__LINE__,__FILE__,CCTK_THORNSTRING,"Please set sphere_ids to to a valid SphericalIntegrator sphere id.");
 }
