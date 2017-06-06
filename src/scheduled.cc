@@ -97,11 +97,14 @@ extern "C" void outint_computePointwise(CCTK_ARGUMENTS) {
           outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = dV*tau;
           // internal energy
           outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = dV*D*eps[ijk];
+          // Ye_star
+          outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,3)] = dV*D*Y_e[ijk];
         }
         else {
           outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = 0;
           outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = 0;
           outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = 0;
+          outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,3)] = 0;
         }
 
         // bernoulli criterion
@@ -114,11 +117,15 @@ extern "C" void outint_computePointwise(CCTK_ARGUMENTS) {
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = dV*tau;
           // internal energy
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = dV*D*eps[ijk];
+          // Ye_star
+          outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,3)] = dV*D*Y_e[ijk];
+        }
         }
         else {
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = 0;
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = 0;
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = 0;
+          outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,3)] = 0;
         }
       }
     }
