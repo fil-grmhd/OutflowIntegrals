@@ -120,7 +120,6 @@ extern "C" void outint_computePointwise(CCTK_ARGUMENTS) {
           // Ye_star
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,3)] = dV*D*Y_e[ijk];
         }
-        }
         else {
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = 0;
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = 0;
