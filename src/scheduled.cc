@@ -53,6 +53,15 @@ extern "C" void outint_computePointwise(CCTK_ARGUMENTS) {
   CCTK_REAL* vely = &vel[1*gf_size];
   CCTK_REAL* velz = &vel[2*gf_size];
 
+  bool const do_mhd = CCTK_IsThornActive("MHD_Analysis");
+  
+  CCTK_REAL * magnetic_energy_temp = nullptr;
+  if(do_mhd) {
+      magnetic_energy_temp = 
+        static_cast<CCTK_REAL*>(CCTK_VarDataPtr(cctkGH,0,"MHD_Analysis::magnetic_energy_temp"));
+      assert(magnetic_energy_temp != nullptr);
+  }
+
 
   // loop over local grid extend
   #pragma omp parallel for schedule(static)
@@ -99,12 +108,16 @@ extern "C" void outint_computePointwise(CCTK_ARGUMENTS) {
           outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = dV*D*eps[ijk];
           // Ye_star
           outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,3)] = dV*D*Y_e[ijk];
+          // magnetic_energy
+          outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,4)] = (do_mhd) ? magnetic_energy_temp[ijk] : 0.;
+
         }
         else {
           outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = 0;
           outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = 0;
           outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = 0;
           outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,3)] = 0;
+          outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,4)] = 0;
         }
 
         // bernoulli criterion
@@ -119,13 +132,15 @@ extern "C" void outint_computePointwise(CCTK_ARGUMENTS) {
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = dV*D*eps[ijk];
           // Ye_star
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,3)] = dV*D*Y_e[ijk];
-        }
+          // magnetic_energy
+          outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,4)] = (do_mhd) ? magnetic_energy_temp[ijk] : 0.;
         }
         else {
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = 0;
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = 0;
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = 0;
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,3)] = 0;
+          outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,4)] = 0;
         }
       }
     }
