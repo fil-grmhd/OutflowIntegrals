@@ -56,10 +56,14 @@ extern "C" void outint_computePointwise(CCTK_ARGUMENTS) {
   bool const do_mhd = CCTK_IsThornActive("MHD_Analysis");
   
   CCTK_REAL * magnetic_energy_temp = nullptr;
+  CCTK_REAL * tau_em = nullptr;
   if(do_mhd) {
       magnetic_energy_temp = 
         static_cast<CCTK_REAL*>(CCTK_VarDataPtr(cctkGH,0,"MHD_Analysis::magnetic_energy_temp"));
+        tau_em  = 
+        static_cast<CCTK_REAL*>(CCTK_VarDataPtr(cctkGH,0,"MHD_Analysis::em_energy_temp"));
       assert(magnetic_energy_temp != nullptr);
+      assert(tau_em != nullptr);
   }
 
 
@@ -103,13 +107,15 @@ extern "C" void outint_computePointwise(CCTK_ARGUMENTS) {
           // mass
           outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = dV*D;
           // total energy
-          outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = dV*tau;
+          outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = (do_mhd) ? dV*tau + tau_em[ijk] : dV*tau;
           // internal energy
           outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = dV*D*eps[ijk];
           // Ye_star
           outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,3)] = dV*D*Y_e[ijk];
           // magnetic_energy
           outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,4)] = (do_mhd) ? magnetic_energy_temp[ijk] : 0.;
+          // rho integral
+          outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,5)] = dV*rho[ijk];
 
         }
         else {
@@ -118,6 +124,7 @@ extern "C" void outint_computePointwise(CCTK_ARGUMENTS) {
           outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = 0;
           outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,3)] = 0;
           outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,4)] = 0;
+          outint_terms_geo[CCTK_GFINDEX4D(cctkGH,i,j,k,5)] = 0;
         }
 
         // bernoulli criterion
@@ -127,13 +134,15 @@ extern "C" void outint_computePointwise(CCTK_ARGUMENTS) {
           // mass
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = dV*D;
           // total energy
-          outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = dV*tau;
+          outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,1)] = (do_mhd) ? dV*tau + tau_em[ijk] : dV*tau;
           // internal energy
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = dV*D*eps[ijk];
           // Ye_star
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,3)] = dV*D*Y_e[ijk];
           // magnetic_energy
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,4)] = (do_mhd) ? magnetic_energy_temp[ijk] : 0.;
+          // rho integral
+          outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,5)] = dV*rho[ijk];
         }
         else {
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,0)] = 0;
@@ -141,6 +150,7 @@ extern "C" void outint_computePointwise(CCTK_ARGUMENTS) {
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,2)] = 0;
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,3)] = 0;
           outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,4)] = 0;
+          outint_terms_bern[CCTK_GFINDEX4D(cctkGH,i,j,k,5)] = 0;
         }
       }
     }
